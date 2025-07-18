@@ -6,21 +6,22 @@ parse_size_to_mib() {
   local input=$(echo "$1" | tr '[:upper:]' '[:lower:]')
 
   if [[ "$input" =~ ^([0-9]+)g$ ]]; then
-    local num="${input%g}"
+    local num="${BASH_REMATCH[1]}"
     echo $(( num * 1024 ))
-  elif [[ "$input" =~ ^([0-9]+)mb?$ ]]; then
-    local num="${input%%[mM][bB]}"
+  elif [[ "$input" =~ ^([0-9]+)(m|mb)$ ]]; then
+    local num="${BASH_REMATCH[1]}"
     echo "$num"
   elif [[ "$input" =~ ^([0-9]+)k$ ]]; then
-    local num="${input%k}"
+    local num="${BASH_REMATCH[1]}"
     echo $(( num / 1024 ))
   elif [[ "$input" =~ ^[0-9]+$ ]]; then
-    echo "$input"  # Assume MB
+    echo "$input"
   else
-    echo "Invalid size format: $1" >&2
+    echo "❌ Invalid format: $1" >&2
     return 1
   fi
 }
+
 
 
 choose_filesystem() {
