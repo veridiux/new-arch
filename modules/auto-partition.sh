@@ -4,12 +4,16 @@ source "$(dirname "$0")/../config.sh"
 
 parse_size_to_mib() {
   local input=$(echo "$1" | tr '[:upper:]' '[:lower:]')
+
   if [[ "$input" =~ ^([0-9]+)g$ ]]; then
-    echo $(( ${BASH_REMATCH[1]} * 1024 ))
+    local num="${input%g}"
+    echo $(( num * 1024 ))
   elif [[ "$input" =~ ^([0-9]+)mb?$ ]]; then
-    echo "${BASH_REMATCH[1]}"
+    local num="${input%%[mM][bB]}"
+    echo "$num"
   elif [[ "$input" =~ ^([0-9]+)k$ ]]; then
-    echo $(( ${BASH_REMATCH[1]} / 1024 ))
+    local num="${input%k}"
+    echo $(( num / 1024 ))
   elif [[ "$input" =~ ^[0-9]+$ ]]; then
     echo "$input"  # Assume MB
   else
@@ -17,6 +21,7 @@ parse_size_to_mib() {
     return 1
   fi
 }
+
 
 choose_filesystem() {
   local part_name=$1
