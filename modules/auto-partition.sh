@@ -124,8 +124,9 @@ fi
 
 # Create swap partition last if used
 if [[ "$USE_SWAP" == true ]]; then
-  SWAP_PART="${DISK}${PART_NUM}"
-  sgdisk -n $PART_NUM:-$SWAP_SIZE:0 -t $PART_NUM:8200 -c $PART_NUM:SWAP "$DISK"
+    sectors=$((swap_mib * 2048))
+    sgdisk -n $PART_NUM:-$sectors:0 -t $PART_NUM:8200 -c $PART_NUM:SWAP "$DISK"
+
 fi
 
 echo "Select filesystems for partitions:"
