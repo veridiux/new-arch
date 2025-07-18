@@ -5,22 +5,23 @@ source "$(dirname "$0")/../config.sh"
 parse_size_to_mib() {
   local input=$(echo "$1" | tr '[:upper:]' '[:lower:]')
 
-  if [[ "$input" =~ ^([0-9]+)g$ ]]; then
-    local num="${BASH_REMATCH[1]}"
-    echo $(( num * 1024 ))
-  elif [[ "$input" =~ ^([0-9]+)(m|mb)$ ]]; then
-    local num="${BASH_REMATCH[1]}"
+  if [[ "$input" == *g ]]; then
+    local num="${input%g}"
+    echo $((num * 1024))
+  elif [[ "$input" == *mb || "$input" == *m ]]; then
+    local num="${input%%m*}"
     echo "$num"
-  elif [[ "$input" =~ ^([0-9]+)k$ ]]; then
-    local num="${BASH_REMATCH[1]}"
-    echo $(( num / 1024 ))
+  elif [[ "$input" == *k ]]; then
+    local num="${input%k}"
+    echo $((num / 1024))
   elif [[ "$input" =~ ^[0-9]+$ ]]; then
     echo "$input"
   else
-    echo "❌ Invalid format: $1" >&2
+    echo "❌ Invalid size format: '$1'" >&2
     return 1
   fi
 }
+
 
 
 
